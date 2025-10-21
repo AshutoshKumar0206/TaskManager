@@ -1,0 +1,21 @@
+# Use a JDK 17 image (or 21 if needed)
+FROM eclipse-temurin:17-jdk
+
+# Set working directory
+WORKDIR /app
+
+# Copy everything
+COPY . .
+
+# Make mvnw executable
+RUN chmod +x mvnw
+
+# Build the project
+RUN ./mvnw clean package -DskipTests
+
+# Expose the port Render will assign
+ENV PORT 8080
+EXPOSE 8080
+
+# Start the app
+CMD ["java", "-jar", "target/*.jar"]
