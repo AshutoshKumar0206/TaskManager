@@ -9,6 +9,9 @@ import { environment } from '../../environments/environment.prod';
 })
 export class ApiService {
   private apiUrl = `${environment.apiUrl}`;
+  ngOnInit() {
+    console.log('API URL:', this.apiUrl);
+  }
   private username = 'admin';
   private password = 'password123';
 
