@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment.prod';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private apiUrl = `${environment.apiUrl}`;
   private username = 'admin';
   private password = 'password123';
 
@@ -31,32 +31,32 @@ export class ApiService {
       params = params.set('search', search);
     }
 
-    return this.http.get<TaskResponse>(`${this.apiUrl}/tasks`, {
+    return this.http.get<TaskResponse>(`${this.apiUrl}/api/tasks`, {
       headers: this.getHeaders(),
       params
     });
   }
 
   createTask(task: TaskRequest): Observable<Task> {
-    return this.http.post<Task>(`${this.apiUrl}/tasks`, task, {
+    return this.http.post<Task>(`${this.apiUrl}/api/tasks`, task, {
       headers: this.getHeaders()
     });
   }
 
   updateTask(id: string, task: TaskRequest): Observable<Task> {
-    return this.http.put<Task>(`${this.apiUrl}/tasks/${id}`, task, {
+    return this.http.put<Task>(`${this.apiUrl}/api/tasks/${id}`, task, {
       headers: this.getHeaders()
     });
   }
 
   deleteTask(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/tasks/${id}`, {
+    return this.http.delete(`${this.apiUrl}/api/tasks/${id}`, {
       headers: this.getHeaders()
     });
   }
 
   getAuditLogs(): Observable<AuditLog[]> {
-    return this.http.get<AuditLog[]>(`${this.apiUrl}/logs`, {
+    return this.http.get<AuditLog[]>(`${this.apiUrl}/api/logs`, {
       headers: this.getHeaders()
     });
   }
