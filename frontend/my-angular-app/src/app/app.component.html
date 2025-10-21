@@ -1,0 +1,185 @@
+<div class="app-container">
+    <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>{{ title }}</h1>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <nav>
+        <ul>
+          <li [class.active]="currentView === 'tasks'" (click)="switchView('tasks')">
+            <span class="icon">📋</span>
+            <span>Tasks</span>
+          </li>
+          <li [class.active]="currentView === 'logs'" (click)="switchView('logs')">
+            <span class="icon">📊</span>
+            <span>Audit Logs</span>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Tasks View -->
+      <div *ngIf="currentView === 'tasks'" class="tasks-view">
+        <div class="content-header">
+          <h2>Tasks</h2>
+          <button class="btn btn-primary" (click)="openCreateModal()">
+            + Create Task
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch()"
+            placeholder="Search tasks by title or description..."
+            class="search-input"
+          />
+          <button class="btn btn-secondary" (click)="onSearch()">Search</button>
+        </div>
+
+        <!-- Tasks Table -->
+        <div class="table-container">
+          <table class="tasks-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let task of tasks">
+                <td>{{ task.id.substring(0, 8) }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ formatDate(task.createdAt) }}</td>
+                <td class="actions">
+                  <button class="btn-action btn-edit" (click)="openEditModal(task)">
+                    Edit
+                  </button>
+                  <button class="btn-action btn-delete" (click)="deleteTask(task)">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="tasks.length === 0">
+                <td colspan="5" class="no-data">No tasks found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" *ngIf="totalPages > 0">
+          <button 
+            class="btn btn-sm" 
+            (click)="goToPage(currentPage - 1)"
+            [disabled]="currentPage === 0"
+          >
+            Previous
+          </button>
+          <span class="page-info">
+            Page {{ currentPage + 1 }} of {{ totalPages }} ({{ totalItems }} total)
+          </span>
+          <button 
+            class="btn btn-sm" 
+            (click)="goToPage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages - 1"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
+      <!-- Audit Logs View -->
+      <div *ngIf="currentView === 'logs'" class="logs-view">
+        <div class="content-header">
+          <h2>Audit Logs</h2>
+        </div>
+
+        <div class="table-container">
+          <table class="logs-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Action Type</th>
+                <th>Task ID</th>
+                <th>Updated Content</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of auditLogs">
+                <td>{{ formatDate(log.timestamp) }}</td>
+                <td>
+                  <span [class]="getActionColor(log.action)" class="action-badge">
+                    {{ log.action }}
+                  </span>
+                </td>
+                <td>{{ log.taskId ? log.taskId.substring(0, 8) : '–' }}</td>
+                <td class="updated-content">{{ formatUpdatedContent(log.updatedContent) }}</td>
+                <td>{{ log.notes || '–' }}</td>
+              </tr>
+              <tr *ngIf="auditLogs.length === 0">
+                <td colspan="5" class="no-data">No audit logs found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Edit Task' : 'Create New Task' }}</h3>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="title">Title *</label>
+          <input
+            id="title"
+            type="text"
+            [(ngModel)]="taskForm.title"
+            [class.error]="formErrors.title"
+            placeholder="Enter task title (max 100 characters)"
+            maxlength="100"
+          />
+          <span class="error-message" *ngIf="formErrors.title">{{ formErrors.title }}</span>
+        </div>
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea
+            id="description"
+            [(ngModel)]="taskForm.description"
+            [class.error]="formErrors.description"
+            placeholder="Enter task description (max 500 characters)"
+            rows="4"
+            maxlength="500"
+          ></textarea>
+          <span class="error-message" *ngIf="formErrors.description">{{ formErrors.description }}</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveTask()">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
