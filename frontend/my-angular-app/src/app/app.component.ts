@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from './services/api.service';
 import { Task, TaskRequest, AuditLog } from './models/task.model';
@@ -8,7 +8,7 @@ import { Task, TaskRequest, AuditLog } from './models/task.model';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClient, FormsModule],
   providers: [ApiService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
