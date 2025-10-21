@@ -5,7 +5,7 @@
       "src": "my-angular-app/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "my-angular-app/dist/my-angular-app"
+        "distDir": "my-angular-app/dist/my-angular-app/browser"
       }
     }
   ],
