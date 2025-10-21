@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "start": "ng serve",
-    "build": "ng build --configuration production",
-    "watch": "ng build --watch --configuration development",
+    "build": "ng build --configuration=production",
+    "watch": "ng build --watch --configuration=development",
     "test": "ng test"
   },
-  
+
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
